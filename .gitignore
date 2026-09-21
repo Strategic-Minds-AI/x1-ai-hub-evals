@@ -8,3 +8,10 @@ coverage/
 *.pem
 *.key
 secrets/
+
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+dist/
+build/
