@@ -1,0 +1,172 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://strategicmindsai.com/schemas/VALIDATION_RECEIPT.schema.json",
+  "title": "ValidationReceipt",
+  "description": "Strict machine contract for independent validation receipts emitted after evaluating WorkPacket executions.",
+  "type": "object",
+  "required": [
+    "receipt_id",
+    "parent_receipt_sha256",
+    "receipt_sha256",
+    "work_packet_id",
+    "validated_at",
+    "validator_agent_id",
+    "executor_agent_id",
+    "tenant_id",
+    "source_sha",
+    "status",
+    "hard_gates",
+    "drift_status",
+    "evidence",
+    "signature"
+  ],
+  "properties": {
+    "receipt_id": {
+      "type": "string",
+      "pattern": "^VAL-[0-9]{8}-[A-Z0-9-]+$"
+    },
+    "parent_receipt_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "Receipt chaining: 64-character SHA-256 hash of the parent receipt. Use '0000000000000000000000000000000000000000000000000000000000000000' for root receipt."
+    },
+    "receipt_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "Cryptographic SHA-256 hash of this receipt body."
+    },
+    "work_packet_id": {
+      "type": "string",
+      "pattern": "^WP-[0-9]{8}-[A-Z0-9-]+$"
+    },
+    "validated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "validator_agent_id": {
+      "type": "string",
+      "description": "Agent ID of the independent validator (must NOT equal executor_agent_id)."
+    },
+    "executor_agent_id": {
+      "type": "string",
+      "description": "Agent ID of the executing agent that performed the mutations."
+    },
+    "tenant_id": {
+      "type": "string",
+      "description": "Tenant ID for tenant isolation verification."
+    },
+    "source_sha": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{40}$",
+      "description": "Exact 40-character Git commit SHA evaluated."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "PASS",
+        "FAIL",
+        "UNKNOWN",
+        "BLOCKED"
+      ]
+    },
+    "hard_gates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "gate_name",
+          "status",
+          "evidence_hash"
+        ],
+        "properties": {
+          "gate_name": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PASS",
+              "FAIL",
+              "BLOCKED"
+            ]
+          },
+          "evidence_hash": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        },
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "drift_status": {
+      "type": "string",
+      "enum": [
+        "IN_SYNC",
+        "DRIFT_DETECTED",
+        "UNKNOWN"
+      ],
+      "description": "Status of state/code drift between source Git SHA and runtime provider."
+    },
+    "evidence": {
+      "type": "object",
+      "required": [
+        "files_inspected",
+        "test_results",
+        "logs_digest",
+        "sha256_checksums"
+      ],
+      "properties": {
+        "files_inspected": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "test_results": {
+          "type": "object",
+          "required": [
+            "total",
+            "passed",
+            "failed",
+            "skipped"
+          ],
+          "properties": {
+            "total": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "passed": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "failed": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "skipped": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "additionalProperties": false
+        },
+        "logs_digest": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "sha256_checksums": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "signature": {
+      "type": "string",
+      "description": "HMAC or cryptographic signature verifying independent validator identity."
+    }
+  },
+  "additionalProperties": false
+}
