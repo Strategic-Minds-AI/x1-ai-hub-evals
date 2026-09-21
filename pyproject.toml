@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "x1-ai-hub-evals"
+version = "1.0.0"
+description = "Deterministic independent QA and mandatory 100% release gate for X1"
+requires-python = ">=3.11"
+
+[project.scripts]
+x1-verify = "x1_evals.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
