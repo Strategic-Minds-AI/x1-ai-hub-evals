@@ -1,0 +1,31 @@
+{
+  "version": "1.0.0",
+  "minimum_clean_cycles": 3,
+  "allowed_statuses": ["PASS"],
+  "reject_stale_evidence": true,
+  "reject_self_certification": true,
+  "release_on_score": 100,
+  "categories": [
+    "source_integrity",
+    "contract_compatibility",
+    "build",
+    "lint",
+    "typecheck",
+    "unit_tests",
+    "integration_tests",
+    "browser_e2e",
+    "security",
+    "dependency_security",
+    "tenant_isolation",
+    "idempotency",
+    "lease_safety",
+    "receipt_integrity",
+    "approval_enforcement",
+    "deterministic_replay",
+    "recovery",
+    "backup_restore",
+    "observability",
+    "documentation",
+    "independent_validation"
+  ]
+}
