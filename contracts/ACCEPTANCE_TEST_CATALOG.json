@@ -1,0 +1,199 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AcceptanceTestCatalog",
+  "version": "1.0.0",
+  "test_suites_count": 9,
+  "test_suites": [
+    {
+      "suite_id": "11_REPOSITORY_SCAFFOLD_SUITE",
+      "title": "11 Repository Scaffold & Infrastructure Verification",
+      "description": "Validates existence, directory structures, required documents, READMEs, REPO_MANIFESTs, and CI workflows for all 11 exact repositories.",
+      "target_repositories": [
+        "x1-ai-hub-protocol",
+        "x1-ai-hub",
+        "x1-ai-hub-catalog",
+        "x1-ai-hub-control-plane",
+        "x1-ai-hub-evals",
+        "x1-ai-hub-infra",
+        "x1-ai-hub-mcp-gateway",
+        "x1-ai-hub-memory",
+        "x1-ai-hub-sandbox",
+        "x1-ai-hub-sdk",
+        "x1-ai-hub-swarm-runtime"
+      ],
+      "tests": [
+        {
+          "test_id": "TEST-REPO-01",
+          "name": "Scaffold Directory & Document Completeness",
+          "gate": "all_hard_gates_pass"
+        },
+        {
+          "test_id": "TEST-REPO-02",
+          "name": "CI Workflow x1-bootstrap-ci.yml Validation",
+          "gate": "all_hard_gates_pass"
+        },
+        {
+          "test_id": "TEST-REPO-03",
+          "name": "Protocol Naming Correction Alignment",
+          "gate": "all_hard_gates_pass"
+        }
+      ]
+    },
+    {
+      "suite_id": "LEASE_AND_ORPHAN_RECOVERY_SUITE",
+      "title": "10-Minute Lease Governance & Orphan Recovery Verification",
+      "description": "Verifies max 600-second (10 minute) task leases, 60-second heartbeat extensions, expiration timeouts, and automatic orphan task reclamation.",
+      "tests": [
+        {
+          "test_id": "TEST-LEASE-01",
+          "name": "Enforce Maximum 600s Lease TTL",
+          "gate": "all_hard_gates_pass"
+        },
+        {
+          "test_id": "TEST-LEASE-02",
+          "name": "Heartbeat Extension Within TTL Boundary",
+          "gate": "all_hard_gates_pass"
+        },
+        {
+          "test_id": "TEST-LEASE-03",
+          "name": "Expired Lease Auto-Reclamation & Orphan Recovery",
+          "gate": "all_hard_gates_pass"
+        }
+      ]
+    },
+    {
+      "suite_id": "IDEMPOTENCY_AND_RECEIPT_CHAINING_SUITE",
+      "title": "Idempotency & Cryptographic Receipt Chaining Verification",
+      "description": "Verifies 64-character SHA-256 idempotency key replay prevention and receipt parent-hash linear chaining.",
+      "tests": [
+        {
+          "test_id": "TEST-IDEM-01",
+          "name": "Duplicate Idempotency Key Rejection",
+          "gate": "all_hard_gates_pass"
+        },
+        {
+          "test_id": "TEST-CHAIN-01",
+          "name": "Validation Receipt Parent SHA256 Chaining",
+          "gate": "all_hard_gates_pass"
+        },
+        {
+          "test_id": "TEST-CHAIN-02",
+          "name": "Receipt Digest Integrity & Signature Check",
+          "gate": "all_hard_gates_pass"
+        }
+      ]
+    },
+    {
+      "suite_id": "SOURCE_SHA_AND_VALIDATOR_SEPARATION_SUITE",
+      "title": "Source SHA Binding & Independent Validator Separation Verification",
+      "description": "Verifies exact 40-character Git commit SHA binding and strict independent validator separation (executor != validator; zero self-certification).",
+      "tests": [
+        {
+          "test_id": "TEST-SHA-01",
+          "name": "Source SHA Binding to Execution Artifacts",
+          "gate": "source_runtime_parity"
+        },
+        {
+          "test_id": "TEST-VAL-01",
+          "name": "Enforce Executor Agent != Validator Agent Rule",
+          "gate": "zero_mandatory_unknown_fail_blocked"
+        },
+        {
+          "test_id": "TEST-VAL-02",
+          "name": "Reject Builder Self-Certification Attempt",
+          "gate": "zero_mandatory_unknown_fail_blocked"
+        }
+      ]
+    },
+    {
+      "suite_id": "APPROVAL_AND_PROTECTED_ACTION_SUITE",
+      "title": "Approval Reference & Protected Action Matrix Verification",
+      "description": "Verifies that protected operations (production deploy, DB mutation, DNS change, spend, handoff) require valid approval references and owner signatures.",
+      "tests": [
+        {
+          "test_id": "TEST-APP-01",
+          "name": "Require Approval Reference for Protected Actions",
+          "gate": "all_hard_gates_pass"
+        },
+        {
+          "test_id": "TEST-APP-02",
+          "name": "Block Unapproved Protected Mutation Attempts",
+          "gate": "zero_mandatory_unknown_fail_blocked"
+        }
+      ]
+    },
+    {
+      "suite_id": "DRIFT_DETECTION_AND_ROLLBACK_SUITE",
+      "title": "Drift Detection & Automatic Rollback Verification",
+      "description": "Verifies 5-minute reconciliation drift detection between Git source SHA and provider state, and tests state snapshot rollback execution.",
+      "tests": [
+        {
+          "test_id": "TEST-DRIFT-01",
+          "name": "Detect Code/Database Drift Against Git SHA",
+          "gate": "source_runtime_parity"
+        },
+        {
+          "test_id": "TEST-ROLLBACK-01",
+          "name": "Execute Snapshot Rollback on Validation Failure",
+          "gate": "all_hard_gates_pass"
+        }
+      ]
+    },
+    {
+      "suite_id": "TENANT_ISOLATION_AND_SSRF_SUITE",
+      "title": "Tenant Isolation & Network/SSRF Guards Verification",
+      "description": "Verifies strict multi-tenant RLS isolation, key boundary separation, egress allowlists, and RFC 1918 / cloud metadata SSRF blocking.",
+      "tests": [
+        {
+          "test_id": "TEST-TENANT-01",
+          "name": "Cross-Tenant Query & Mutation Rejection",
+          "gate": "all_hard_gates_pass"
+        },
+        {
+          "test_id": "TEST-SSRF-01",
+          "name": "Block Access to Localhost & 169.254.169.254",
+          "gate": "all_hard_gates_pass"
+        },
+        {
+          "test_id": "TEST-SSRF-02",
+          "name": "Enforce Egress Host Allowlist",
+          "gate": "all_hard_gates_pass"
+        }
+      ]
+    },
+    {
+      "suite_id": "SPENDING_CAP_AND_CLIENT_HANDOFF_SUITE",
+      "title": "Spending Caps & Client Handoff Protocol Verification",
+      "description": "Verifies daily and monthly financial caps, mutation halting on budget breach, resource inventory verification, and secret rotation checklists.",
+      "tests": [
+        {
+          "test_id": "TEST-SPEND-01",
+          "name": "Halt Execution When Spending Cap Exceeded",
+          "gate": "all_hard_gates_pass"
+        },
+        {
+          "test_id": "TEST-HANDOFF-01",
+          "name": "Validate Handoff Bundle Schema & Secret Rotation",
+          "gate": "all_hard_gates_pass"
+        }
+      ]
+    },
+    {
+      "suite_id": "LIFECYCLE_STATE_TRANSITION_SUITE",
+      "title": "Dual Lifecycle State Machine Transition Verification",
+      "description": "Validates state transitions, gate prerequisites, and protected locks across the 15-state System Build Lifecycle and 9-state Provisioning Lifecycle.",
+      "tests": [
+        {
+          "test_id": "TEST-LIFE-01",
+          "name": "System Build Lifecycle State Transition Rules",
+          "gate": "three_fresh_clean_cycles_same_sha"
+        },
+        {
+          "test_id": "TEST-LIFE-02",
+          "name": "Multi-Provider Provisioning Lifecycle State Transition Rules",
+          "gate": "all_hard_gates_pass"
+        }
+      ]
+    }
+  ]
+}
